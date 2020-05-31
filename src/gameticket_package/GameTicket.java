@@ -1,5 +1,7 @@
 package gameticket_package;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -7,9 +9,10 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
+
 public class GameTicket {
 	
-	public static void main(String[] args) {
+	public static void main(String[] args)throws ParseException {
 		
 		Scanner input = new Scanner(System.in);
 		
@@ -18,11 +21,14 @@ public class GameTicket {
 		boolean exit = false;
 		App app = null;
 		do {
-			System.out.println("If you are an organizer press 1 If you are a fan press 2 to exit press any other number");
+			System.out.println("1- If you are an organizer press 1");
+			System.out.println("2- If you are a fan press 2");
+			System.out.println("3- To exit press any other number");
 			switch(input.nextInt()){
 				case 1:
 					app = new OrganizerApp(games,input).activateScreen();
 					exit = app.isExitSelected();
+					System.out.println("e "+exit);
 					break;
 				case 2:
 					app = new FanApp(games,input).activateScreen();
@@ -40,12 +46,14 @@ abstract class App{
 	
 	private List<Game> games;
 	private boolean exit;
+	protected Scanner input;
 	
 	public App(List<Game> games,Scanner input) {
 		this.games = games;
+		this.input=input;
 	}
 	
-	public abstract App activateScreen();
+	public abstract App activateScreen()throws ParseException;
 	
 	public boolean isExitSelected() {
 		return exit;
@@ -64,7 +72,47 @@ class OrganizerApp extends App{
 	}
 	
 	@Override
-	public OrganizerApp activateScreen() {
+	public OrganizerApp activateScreen() throws ParseException {
+		System.out.println("1- To create game press 1");
+		System.out.println("2- To see all games press 2");
+		System.out.println("3- To get info about a game press 3");
+		System.out.println("4- To exit press any other number");
+		switch(input.nextInt()) {
+		case 1:
+			System.out.println("first team name:");
+			String teamOneName = input.next();
+			System.out.println(teamOneName);
+			System.out.println("second team name:");
+			String teamTwoName = input.next();
+			System.out.println("location");
+			String location = input.next();
+            System.out.println("date dd-mm-yyyy");
+            String date = input.next();
+            System.out.println("number of seats for category 1");
+            int first = input.nextInt();
+            System.out.println("number of seats for category 2");
+            int second = input.nextInt();
+            System.out.println("number of seats for category 3");
+            int third = input.nextInt();
+            getGames().add(new Game(teamOneName, teamTwoName, location,new SimpleDateFormat("dd-MM-yyyy").parse(date)
+            		, first, second, third));
+            System.out.println("Created");
+            System.out.println("To continue press 1 to exit press any other number");
+            int e = input.nextInt();
+            setExit(e==1?false:true);
+			break;
+		case 2:	
+			for(Game g :getGames())
+				System.out.println(g);
+			System.out.println("To continue press 1 to exit press any other number");
+            int e1 = input.nextInt();
+            setExit(e1==1?false:true);
+		    break;
+		case 3:	
+		    break;
+		default:    
+			setExit(true);
+		}
 		return this;
 	}
 	
@@ -215,6 +263,10 @@ class Game{
 		return true;
 	}
 	
+	@Override
+	public String toString() {
+		return code+" "+location;
+	}
 	
 	
 }
