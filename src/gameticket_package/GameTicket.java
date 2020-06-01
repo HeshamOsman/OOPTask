@@ -28,7 +28,6 @@ public class GameTicket {
 				case 1:
 					app = new OrganizerApp(games,input).activateScreen();
 					exit = app.isExitSelected();
-					System.out.println("e "+exit);
 					break;
 				case 2:
 					app = new FanApp(games,input).activateScreen();
@@ -37,6 +36,7 @@ public class GameTicket {
 				default:
 					exit = true;
 			}
+			if(exit) System.out.println("GoodBye :-)");
 		}while(!exit);
 		
 	}
@@ -81,7 +81,6 @@ class OrganizerApp extends App{
 		case 1:
 			System.out.println("first team name:");
 			String teamOneName = input.next();
-			System.out.println(teamOneName);
 			System.out.println("second team name:");
 			String teamTwoName = input.next();
 			System.out.println("location");
@@ -109,15 +108,29 @@ class OrganizerApp extends App{
             setExit(e1==1?false:true);
 		    break;
 		case 3:	
+			System.out.println("Enter game code: ");
+			Game g = GameHelper.getGameByCode(getGames(), input.nextInt());
+			System.out.println("1- to see number of sold tickets press 1");
+			System.out.println("2- to see bets press 2");
+			switch (input.nextInt()) {
+			case 1:
+				System.out.println(g.getTickets().size());
+				break;
+			case 2:
+				for(String b:g.getBets()) 
+				System.out.println(b);
+				break;
+			default:
+				break;
+			}
+			System.out.println("To continue press 1 to exit press any other number");
+            int e2 = input.nextInt();
+            setExit(e2==1?false:true);
 		    break;
 		default:    
 			setExit(true);
 		}
 		return this;
-	}
-	
-	private void addGame() {
-		
 	}
 }
 
@@ -127,6 +140,71 @@ class FanApp extends App{
 	}
 	@Override
 	public FanApp activateScreen() {
+		for(Game g :getGames())
+			System.out.println(g);
+		System.out.println("Enter game code: ");
+		Game g = GameHelper.getGameByCode(getGames(), input.nextInt());
+		System.out.println("1- To see availiable seats press 1");
+		System.out.println("2- To reserve a ticket press 2");
+		System.out.println("3- To cancel reservation press 3");
+		System.out.println("4- To make a bet press 4");
+		System.out.println("5- To change seat press 5");
+		System.out.println("6- To exit press any other number");
+		switch(input.nextInt()) {
+		case 1:
+			for(Seat s:g.getAvailiableSeats())
+				System.out.println(s);
+			System.out.println("To continue press 1 to exit press any other number");
+            int e1 = input.nextInt();
+            setExit(e1==1?false:true);
+		    break;
+		case 2:
+			System.out.println("Enter seat category");
+            int sc = input.nextInt();
+			System.out.println("Enter seat number");
+            int sn = input.nextInt();
+            Ticket t = g.reserveTicket(sn, sc);
+            System.out.println("Done, your ticket info is: "+t);
+			System.out.println("To continue press 1 to exit press any other number");
+            int e2 = input.nextInt();
+            setExit(e2==1?false:true);
+		    break;
+		case 3:
+			System.out.println("Enter ticket number");
+            int tn = input.nextInt();
+            g.cancelTicketReservation(tn);
+            System.out.println("Cancelled");
+			System.out.println("To continue press 1 to exit press any other number");
+            int e3 = input.nextInt();
+            setExit(e3==1?false:true);
+		    break;
+		case 4:
+			System.out.println("Enter expectation for "+g.getTeamOneName());
+            int t1 = input.nextInt();
+            System.out.println("Enter expectation for "+g.getTeamTwoName());
+            int t2 = input.nextInt();
+            GameHelper.addBet(getGames(), g.getCode(), t1, t2);
+            System.out.println("Done.");
+			System.out.println("To continue press 1 to exit press any other number");
+            int e4 = input.nextInt();
+            setExit(e4==1?false:true);
+		    break;
+		case 5:
+			System.out.println("Enter ticket number");
+            int tn1 = input.nextInt();
+			System.out.println("Enter new seat category");
+            int sc1 = input.nextInt();
+			System.out.println("Enter new seat number");
+            int sn1 = input.nextInt();
+            g.changeTicketReservation(tn1, sn1, sc1);
+            System.out.println("Done, your new ticket info is: "+g.getTicket(tn1));
+			System.out.println("To continue press 1 to exit press any other number");
+            int e5 = input.nextInt();
+            setExit(e5==1?false:true);
+		    break;    
+		default:
+			setExit(true);
+		}
 		return this;
 	}
 }
@@ -188,6 +266,14 @@ class Game{
 		return teamOneName+" vs "+teamTwoName;
 	}
 	
+	public String getTeamOneName() {
+		return teamOneName;
+	}
+	
+	public String getTeamTwoName() {
+		return teamTwoName;
+	}
+	
 	public Ticket reserveTicket(int seatNumber,int seatCategory) {
 		Seat selectedSeat = null;
 		for(Seat s:seats) {
@@ -209,6 +295,19 @@ class Game{
 	}
 	
 	public boolean cancelTicketReservation(int ticketNumber) {
+		Ticket selectedTicket = getTicket(ticketNumber);
+		
+		long diff = TimeUnit.DAYS.convert(date.getTime()-new Date().getTime(), TimeUnit.MILLISECONDS);
+		if(diff<=3)
+			throw new TicketCanNotCanelledException();
+		
+		selectedTicket.getSeat().setReserved(false);
+		tickets.remove(selectedTicket);
+		
+		return true;
+	}
+	
+	public Ticket getTicket(int ticketNumber) {
 		Ticket selectedTicket = null;
 		for(Ticket t :tickets) {
 			if(t.getTicketNumber()==ticketNumber) {
@@ -220,15 +319,7 @@ class Game{
 		
 		if(selectedTicket == null)
 			throw new TicketNotExistException();
-		
-		long diff = TimeUnit.DAYS.convert(date.getTime()-new Date().getTime(), TimeUnit.MILLISECONDS);
-		if(diff<=3)
-			throw new TicketCanNotCanelledException();
-		
-		selectedTicket.getSeat().setReserved(false);
-		tickets.remove(selectedTicket);
-		
-		return true;
+		return selectedTicket;
 	}
 	
 	public boolean changeTicketReservation(int ticketNumber,int seatNumber,int seatCategory) {
@@ -271,8 +362,9 @@ class Game{
 	
 }
 
-class BetHelper{
-	public static void addBet(List<Game> games,int gameCode,int teamOneResult,int teamTwoResult) {
+
+class GameHelper{
+	public static Game getGameByCode(List<Game> games,int gameCode) {
 		Game sg = null;
 		for(Game game:games) {
 			if(game.getCode()==gameCode) {
@@ -281,9 +373,23 @@ class BetHelper{
 			}
 		}
 		
-		if(sg!=null)
-			sg.getBets().add(teamOneResult+"/"+teamTwoResult);
+		if(sg==null)
+			throw new GameNotFoundException();
+		return sg;
 	}
+	public static void addBet(List<Game> games,int gameCode,int teamOneResult,int teamTwoResult) {
+		Game sg = getGameByCode(games, gameCode);
+		
+		sg.getBets().add(teamOneResult+"/"+teamTwoResult);
+	}
+}
+
+class GameNotFoundException extends RuntimeException{
+
+	public GameNotFoundException() {
+		super("No game exist with that code");
+	}
+
 }
 
 abstract class SeatException extends RuntimeException{
