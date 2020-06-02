@@ -10,9 +10,10 @@ import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 
+
 public class GameTicket {
 	
-	public static void main(String[] args)throws ParseException {
+	public static void main(String[] args) {
 		
 		Scanner input = new Scanner(System.in);
 		
@@ -72,7 +73,7 @@ class OrganizerApp extends App{
 	}
 	
 	@Override
-	public OrganizerApp activateScreen() throws ParseException {
+	public OrganizerApp activateScreen() {
 		System.out.println("1- To create game press 1");
 		System.out.println("2- To see all games press 2");
 		System.out.println("3- To get info about a game press 3");
@@ -93,9 +94,15 @@ class OrganizerApp extends App{
             int second = input.nextInt();
             System.out.println("number of seats for category 3");
             int third = input.nextInt();
-            getGames().add(new Game(teamOneName, teamTwoName, location,new SimpleDateFormat("dd-MM-yyyy").parse(date)
-            		, first, second, third));
-            System.out.println("Created");
+            try {
+            	getGames().add(new Game(teamOneName, teamTwoName, location,new SimpleDateFormat("dd-MM-yyyy").parse(date)
+                		, first, second, third));
+            	System.out.println("Created");
+            }catch (ParseException  e) {
+            	System.out.println("Error creating game: not valid date");
+			}
+            
+            
             System.out.println("To continue press 1 to exit press any other number");
             int e = input.nextInt();
             setExit(e==1?false:true);
@@ -109,7 +116,13 @@ class OrganizerApp extends App{
 		    break;
 		case 3:	
 			System.out.println("Enter game code: ");
-			Game g = GameHelper.getGameByCode(getGames(), input.nextInt());
+			Game g = null;
+			try {
+				 g = GameHelper.getGameByCode(getGames(), input.nextInt());
+			} catch (GameNotFoundException ge) {
+				System.out.println(ge.getMessage());
+				return this;
+			}
 			System.out.println("1- to see number of sold tickets press 1");
 			System.out.println("2- to see bets press 2");
 			switch (input.nextInt()) {
@@ -140,10 +153,23 @@ class FanApp extends App{
 	}
 	@Override
 	public FanApp activateScreen() {
+		
+		if(getGames().isEmpty()) {
+			System.out.println("Sorry there is no games right now");
+			return this;
+		}
+			
 		for(Game g :getGames())
 			System.out.println(g);
 		System.out.println("Enter game code: ");
-		Game g = GameHelper.getGameByCode(getGames(), input.nextInt());
+		Game g = null;
+		try {
+			 g = GameHelper.getGameByCode(getGames(), input.nextInt());
+		} catch (GameNotFoundException e) {
+			System.out.println(e.getMessage());
+			return this;
+		}
+		
 		System.out.println("1- To see availiable seats press 1");
 		System.out.println("2- To reserve a ticket press 2");
 		System.out.println("3- To cancel reservation press 3");
@@ -152,8 +178,13 @@ class FanApp extends App{
 		System.out.println("6- To exit press any other number");
 		switch(input.nextInt()) {
 		case 1:
-			for(Seat s:g.getAvailiableSeats())
-				System.out.println(s);
+			try {
+				for(Seat s:g.getAvailiableSeats())
+					System.out.println(s);
+			}catch(NoAvailiableSeatsException e) {
+				System.out.println("Sorry, No available Seats right now");
+			}
+			
 			System.out.println("To continue press 1 to exit press any other number");
             int e1 = input.nextInt();
             setExit(e1==1?false:true);
@@ -163,8 +194,13 @@ class FanApp extends App{
             int sc = input.nextInt();
 			System.out.println("Enter seat number");
             int sn = input.nextInt();
-            Ticket t = g.reserveTicket(sn, sc);
-            System.out.println("Done, your ticket info is: "+t);
+            try {
+            	Ticket t = g.reserveTicket(sn, sc);
+                System.out.println("Done, your ticket info is: "+t);
+            }catch (SeatNotAvailiableException e) {
+            	System.out.println("Sorry, this seat is not available");
+			}
+            
 			System.out.println("To continue press 1 to exit press any other number");
             int e2 = input.nextInt();
             setExit(e2==1?false:true);
@@ -172,8 +208,13 @@ class FanApp extends App{
 		case 3:
 			System.out.println("Enter ticket number");
             int tn = input.nextInt();
-            g.cancelTicketReservation(tn);
-            System.out.println("Cancelled");
+            try {
+            	g.cancelTicketReservation(tn);
+                System.out.println("Cancelled");
+            }catch (TicketException te) {
+				System.out.println(te.getMessage());
+			}
+            
 			System.out.println("To continue press 1 to exit press any other number");
             int e3 = input.nextInt();
             setExit(e3==1?false:true);
@@ -196,8 +237,15 @@ class FanApp extends App{
             int sc1 = input.nextInt();
 			System.out.println("Enter new seat number");
             int sn1 = input.nextInt();
-            g.changeTicketReservation(tn1, sn1, sc1);
-            System.out.println("Done, your new ticket info is: "+g.getTicket(tn1));
+            try {
+            	g.changeTicketReservation(tn1, sn1, sc1);
+                System.out.println("Done, your new ticket info is: "+g.getTicket(tn1));
+            }catch (TicketException te) {
+				System.out.println(te.getMessage());
+			}catch (SeatNotAvailiableException e) {
+				System.out.println(e.getMessage());
+			}
+            
 			System.out.println("To continue press 1 to exit press any other number");
             int e5 = input.nextInt();
             setExit(e5==1?false:true);
@@ -356,7 +404,7 @@ class Game{
 	
 	@Override
 	public String toString() {
-		return code+" "+location;
+		return "Code: "+code+", "+teamOneName+" vs "+teamTwoName+", Location: "+location+", Date: "+date;
 	}
 	
 	
@@ -457,20 +505,16 @@ abstract class Seat{
 		return reserved;
 	}
 	
-	@Override
-	public String toString() {
-		return "Seat number: "+number+", Seat category: "+category;
-	}
-	
-//	public void setPrice(int price) {
-//		this.price = price;
-//	}
-//	public void setCategory(int category) {
-//		this.category = category;
-//	}
 	public void setReserved(boolean reserved) {
 		this.reserved = reserved;
 	}
+	
+	@Override
+	public String toString() {
+		return "Seat number: "+number+", Seat category: "+category+", price: "+price;
+	}
+	
+	
 	
 }
 class Category1Seat extends Seat{
