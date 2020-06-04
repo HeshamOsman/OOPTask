@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 
- * @author hesham
+ * @author Mary
  * 
  * @GameTicket is main class that holds how the sport reservation system works
  * 
@@ -64,7 +64,7 @@ public class GameTicket {
  * it contains all the games that added by an organizer and also the exit option.
  * 
  * this class represent inheritance
- * @author hesham
+ * @author Mary
  *
  */
 abstract class App{
@@ -116,7 +116,7 @@ abstract class App{
  * Child class of @App represents the options the organizer has.
  * 
  * this class uses method overloading
- * @author hesham
+ * @author Mary
  *
  */
 class OrganizerApp extends App{
@@ -213,7 +213,7 @@ class OrganizerApp extends App{
  * Child class of @App represents the options the fan has.
  * 
  * this class uses method overloading
- * @author hesham
+ * @author Mary
  *
  */
 class FanApp extends App{
@@ -337,7 +337,7 @@ class FanApp extends App{
 }
 /**
  * This class represent game information entered by an organizer
- * @author hesham
+ * @author Mary
  *
  */
 class Game{
@@ -561,7 +561,7 @@ class Game{
 
 /**
  * Class that has some static methods to get games data
- * @author hesham
+ * @author Mary
  *
  */
 class GameHelper{
@@ -599,7 +599,7 @@ class GameHelper{
 }
 /**
  * Custom exception for not found game
- * @author hesham
+ * @author Mary
  *
  */
 class GameNotFoundException extends RuntimeException{
@@ -611,7 +611,7 @@ class GameNotFoundException extends RuntimeException{
 }
 /**
  * abstract parent class for all seats exceptions
- * @author hesham
+ * @author Mary
  *
  */
 abstract class SeatException extends RuntimeException{
@@ -621,7 +621,7 @@ abstract class SeatException extends RuntimeException{
 }
 /**
  * abstract parent class for all tickets exceptions
- * @author hesham
+ * @author Mary
  *
  */
 abstract class TicketException extends RuntimeException{
@@ -631,7 +631,7 @@ abstract class TicketException extends RuntimeException{
 }
 /**
  * child class of @SeatException if all seats all reserved
- * @author hesham
+ * @author Mary
  *
  */
 class NoAvailiableSeatsException extends SeatException{
@@ -643,7 +643,7 @@ class NoAvailiableSeatsException extends SeatException{
 
 /**
  * child class of @SeatException if the seat is not available
- * @author hesham
+ * @author Mary
  *
  */
 class SeatNotAvailiableException extends SeatException{
@@ -655,7 +655,7 @@ class SeatNotAvailiableException extends SeatException{
 
 /**
  *  child class of @TicketException if the ticket is not found
- * @author hesham
+ * @author Mary
  *
  */
 class TicketNotExistException extends TicketException{
@@ -666,7 +666,7 @@ class TicketNotExistException extends TicketException{
 }
 /**
  *  child class of @TicketException if you can't cancel your ticket
- * @author hesham
+ * @author Mary
  *
  */
 class TicketCanNotCanelledException extends TicketException{
@@ -677,7 +677,7 @@ class TicketCanNotCanelledException extends TicketException{
 }
 /**
  * abastract class for all seats categories
- * @author hesham
+ * @author Mary
  *
  */
 abstract class Seat{
@@ -748,7 +748,7 @@ abstract class Seat{
 }
 /**
  * Child class of @Seat for first category 
- * @author hesham
+ * @author Mary
  *
  */
 class Category1Seat extends Seat{
@@ -763,7 +763,7 @@ class Category1Seat extends Seat{
 }
 /**
  * Child class of @Seat for second category 
- * @author hesham
+ * @author Mary
  *
  */
 class Category2Seat extends Seat{
@@ -777,7 +777,7 @@ class Category2Seat extends Seat{
 }
 /**
  * Child class of @Seat for third category 
- * @author hesham
+ * @author Mary
  *
  */
 class Category3Seat extends Seat{
@@ -792,7 +792,7 @@ class Category3Seat extends Seat{
 }
 /**
  * class that holds ticket data
- * @author hesham
+ * @author Mary
  *
  */
 class Ticket{
