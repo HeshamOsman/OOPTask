@@ -11,20 +11,23 @@ import java.util.concurrent.TimeUnit;
 
 
 /**
- * 
+ * This is the main class that holds how the sport reservation system works
  * @author Mary
  * 
- * @GameTicket is main class that holds how the sport reservation system works
+ * 
  * 
  *
  */
 public class GameTicket {
 	/**
 	 * Main method is the entry point for our application it allows user to choose between different screens
-	 * the first is the @OrganizerApp screen and the second on is the @FanApp screen  
-	 * it's important for the first time to choose the @OrganizerApp option to add games that fans can use after that. 
-	 * 
-	 * This method uses polymorphism with @App
+	 * the first is the OrganizerApp screen and the second on is the FanApp screen  
+	 * it's important for the first time to choose the OrganizerApp option to add games that fans can use after that. 
+	 * @see OrganizerApp
+	 * @see FanApp
+	 * @see OrganizerApp
+	 * This method uses polymorphism with App
+	 * @see App
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -59,10 +62,11 @@ public class GameTicket {
 }
 
 /**
- * @App
- * An abstract class that holds the common data and method for @OrganizerApp and @FanApp
- * it contains all the games that added by an organizer and also the exit option.
  * 
+ * An abstract class that holds the common data and method for OrganizerApp and FanApp
+ * it contains all the games that added by an organizer and also the exit option.
+ * @see OrganizerApp
+ * @see FanApp
  * this class represent inheritance
  * @author Mary
  *
@@ -74,8 +78,8 @@ abstract class App{
 	protected Scanner input;
 	/**
 	 * Constructor 
-	 * @param games
-	 * @param input
+	 * @param games list of games
+	 * @param input scanner
 	 */
 	public App(List<Game> games,Scanner input) {
 		this.games = games;
@@ -83,9 +87,12 @@ abstract class App{
 	}
 	
 	/**
-	 * Abstract method to be implemented by subclasses @OrganizerApp and @FanApp to view which options the organizer or fan has.
-	 * @return
+	 * Abstract method to be implemented by subclasses @OrganizerApp and FanApp to view which options the organizer or fan has.
+	 * @return App
 	 * @throws ParseException
+	 * @see ParseException
+	 * @see OrganizerApp
+	 * @see FanApp
 	 */
 	public abstract App activateScreen()throws ParseException;
 	
@@ -106,14 +113,14 @@ abstract class App{
 	}
 	/**
 	 * get list of games that added to the app so far
-	 * @return
+	 * @return list of games
 	 */
 	protected List<Game> getGames(){
 		return games;
 	}
 }
 /**
- * Child class of @App represents the options the organizer has.
+ * Child class of @see App represents the options the organizer has.
  * 
  * this class uses method overloading
  * @author Mary
@@ -210,8 +217,8 @@ class OrganizerApp extends App{
 	}
 }
 /**
- * Child class of @App represents the options the fan has.
- * 
+ * Child class of  App represents the options the fan has.
+ * @see App
  * this class uses method overloading
  * @author Mary
  *
@@ -378,7 +385,8 @@ class Game{
 	}
 	/**
 	 * Method to get all available seats for a fan
-	 * @return
+	 * @return list of seats 
+	 * @see Seat
 	 */
 	public List<Seat> getAvailiableSeats(){
 		List<Seat> availiableSeats = new ArrayList<>();
@@ -395,14 +403,15 @@ class Game{
 	
 	/**
 	 * method to get all purchased tickets 
-	 * @return
+	 * @return list of tickets
+	 * @see Ticket
 	 */
 	public List<Ticket> getTickets(){
 		return tickets;
 	}
 	/**
 	 * method to get all bets tickets 
-	 * @return
+	 * @return list of strings
 	 */
 	public List<String> getBets(){
 		return bets;
@@ -410,7 +419,7 @@ class Game{
 	
 	/**
 	 * public method to get game code 
-	 * @return
+	 * @return int represetnt the code
 	 */
 	public int getCode(){
 		return code;
@@ -418,7 +427,7 @@ class Game{
 	
 	/**
 	 * public method to get Teams Names
-	 * @return
+	 * @return String have the two teams names together
 	 */
 	public String getTeamsNames() {
 		return teamOneName+" vs "+teamTwoName;
@@ -426,7 +435,7 @@ class Game{
 	
 	/**
 	 * public method to get Team One Name 
-	 * @return
+	 * @return String
 	 */
 	public String getTeamOneName() {
 		return teamOneName;
@@ -434,7 +443,7 @@ class Game{
 	
 	/**
 	 * public method to get Team two Name 
-	 * @return
+	 * @return String
 	 */
 	public String getTeamTwoName() {
 		return teamTwoName;
@@ -443,10 +452,12 @@ class Game{
 	/**
 	 * public method to reserve a ticket 
 	 * throws an exception if the seat is not found or not available
-	 * @throws @SeatNotAvailiableException
+	 * @throws SeatNotAvailiableException
+	 * @see SeatNotAvailiableException
 	 * @param seatNumber
 	 * @param seatCategory
-	 * @return
+	 * @return Ticket
+	 * @see Ticket
 	 */
 	public Ticket reserveTicket(int seatNumber,int seatCategory) {
 		Seat selectedSeat = null;
@@ -470,10 +481,12 @@ class Game{
 	
 	/**
 	 * public method to cancel a ticket
-	 * @throws @TicketCanNotCanelledException if there is less that three days to the game date
-	 * @throws @TicketNotExistException if the ticket number is not right
+	 * @throws TicketCanNotCanelledException if there is less that three days to the game date
+	 * @see TicketCanNotCanelledException
+	 * @throws TicketNotExistException if the ticket number is not right
+	 * @see TicketNotExistException
 	 * @param ticketNumber
-	 * @return
+	 * @return boolean if the reservation is done successfuly or not
 	 */
 	public boolean cancelTicketReservation(int ticketNumber) {
 		Ticket selectedTicket = getTicket(ticketNumber);
@@ -490,9 +503,11 @@ class Game{
 	
 	/**
 	 * public method to get ticket by its number
-	 * @throws @TicketNotExistException if the ticket number is not right
+	 * @throws TicketNotExistException if the ticket number is not right
+	 * @see TicketNotExistException
 	 * @param ticketNumber
-	 * @return
+	 * @return Ticket
+	 * @see Ticket
 	 */
 	public Ticket getTicket(int ticketNumber) {
 		Ticket selectedTicket = null;
@@ -510,12 +525,14 @@ class Game{
 	}
 	/**
 	 * change and upgrade seat
-	 * @throws @TicketNotExistException if the ticket number is not right
-	 * @throws @SeatNotAvailiableException if the new seat is not found or not available
+	 * @throws TicketNotExistException if the ticket number is not right
+	 * @see TicketNotExistException
+	 * @throws SeatNotAvailiableException if the new seat is not found or not available
+	 * @see SeatNotAvailiableException
 	 * @param ticketNumber
 	 * @param seatNumber
 	 * @param seatCategory
-	 * @return
+	 * @return boolean
 	 */
 	public boolean changeTicketReservation(int ticketNumber,int seatNumber,int seatCategory) {
 		Ticket selectedTicket = null;
@@ -569,7 +586,10 @@ class GameHelper{
 	 * static method to get game by code
 	 * @param games
 	 * @param gameCode
-	 * @return
+	 * @return Game
+	 * @see Game
+	 * @throws GameNotFoundException 
+	 * @see GameNotFoundException
 	 */
 	public static Game getGameByCode(List<Game> games,int gameCode) {
 		Game sg = null;
@@ -630,7 +650,8 @@ abstract class TicketException extends RuntimeException{
 	}
 }
 /**
- * child class of @SeatException if all seats all reserved
+ * child class of SeatException if all seats all reserved
+ * @see SeatException
  * @author Mary
  *
  */
@@ -642,7 +663,8 @@ class NoAvailiableSeatsException extends SeatException{
 }
 
 /**
- * child class of @SeatException if the seat is not available
+ * child class of SeatException if the seat is not available
+ * @see SeatException
  * @author Mary
  *
  */
@@ -654,7 +676,8 @@ class SeatNotAvailiableException extends SeatException{
 }
 
 /**
- *  child class of @TicketException if the ticket is not found
+ *  child class of TicketException if the ticket is not found
+ *  @see TicketException
  * @author Mary
  *
  */
@@ -665,7 +688,8 @@ class TicketNotExistException extends TicketException{
 
 }
 /**
- *  child class of @TicketException if you can't cancel your ticket
+ *  child class of TicketException if you can't cancel your ticket
+ *  @see TicketException
  * @author Mary
  *
  */
@@ -700,28 +724,28 @@ abstract class Seat{
 	}
 	/**
 	 * get seat number
-	 * @return
+	 * @return int
 	 */
 	public int getNumber() {
 		return number;
 	}
 	/**
 	 * get seat price
-	 * @return
+	 * @return int
 	 */
 	public int getPrice() {
 		return price;
 	}
 	/**
 	 * get category 
-	 * @return
+	 * @return int
 	 */
 	public int getCategory() {
 		return category;
 	}
 	/**
 	 * check if the seat is reserved
-	 * @return
+	 * @return boolean
 	 */
 	public boolean isReserved() {
 		return reserved;
@@ -747,7 +771,8 @@ abstract class Seat{
 	
 }
 /**
- * Child class of @Seat for first category 
+ * Child class of Seat for first category
+ * @see Seat 
  * @author Mary
  *
  */
@@ -762,7 +787,8 @@ class Category1Seat extends Seat{
 	
 }
 /**
- * Child class of @Seat for second category 
+ * Child class of Seat for second category
+ * @see Seat 
  * @author Mary
  *
  */
@@ -776,7 +802,8 @@ class Category2Seat extends Seat{
 	}
 }
 /**
- * Child class of @Seat for third category 
+ * Child class of Seat for third category 
+ * @see Seat
  * @author Mary
  *
  */
@@ -808,21 +835,22 @@ class Ticket{
 	}
 	/**
 	 * get ticket number
-	 * @return
+	 * @return int ticket number
 	 */
 	public int getTicketNumber() {
 		return ticketNumber;
 	}
 	/**
 	 * get seat object
-	 * @return
+	 * @return seat 
+	 * @see Seat
 	 */
 	public Seat getSeat() {
 		return seat;
 	}
     /** 
      * set seat
-     * @param s
+     * @param s @see Seat
      */
 	public void setSeat(Seat s) {
 		this.seat=s;
