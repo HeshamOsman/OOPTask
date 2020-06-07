@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * This is the main class that holds how the sport reservation system works
- * @author Mary
+ * 
  * 
  * 
  * 
@@ -63,28 +63,16 @@ public class GameTicket {
 
 /**
  * 
- * An abstract class that holds the common data and method for OrganizerApp and FanApp
+ * An interface that holds the common  method for OrganizerApp and FanApp
  * it contains all the games that added by an organizer and also the exit option.
  * @see OrganizerApp
  * @see FanApp
- * this class represent inheritance
- * @author Mary
+ * 
+ * 
  *
  */
-abstract class App{
+interface  App{
 	
-	private List<Game> games;
-	private boolean exit;
-	protected Scanner input;
-	/**
-	 * Constructor 
-	 * @param games list of games
-	 * @param input scanner
-	 */
-	public App(List<Game> games,Scanner input) {
-		this.games = games;
-		this.input=input;
-	}
 	
 	/**
 	 * Abstract method to be implemented by subclasses @OrganizerApp and FanApp to view which options the organizer or fan has.
@@ -100,41 +88,45 @@ abstract class App{
 	 * get if the user want to exit from the app or not
 	 * @return boolean 
 	 */
-	public boolean isExitSelected() {
-		return exit;
-	}
+	public abstract boolean isExitSelected();
+
 	
 	/**
 	 * set the exit value if the user want to exit from the app or not
 	 * @param exit
 	 */
-	protected void setExit(boolean exit) {
-		this.exit = exit;
-	}
+	public abstract void setExit(boolean exit);
+
 	/**
 	 * get list of games that added to the app so far
 	 * @return list of games
 	 */
-	protected List<Game> getGames(){
-		return games;
-	}
+	public abstract List<Game> getGames();
+
 }
 /**
- * Child class of @see App represents the options the organizer has.
+ * An implementation of @see App interface represents the options the organizer has.
  * 
  * this class uses method overloading
- * @author Mary
+ * 
  *
  */
-class OrganizerApp extends App{
+class OrganizerApp implements App{
+	
+	
+	private List<Game> games;
+	private boolean exit;
+	protected Scanner input;
+	
 	
 	/**
 	 * Constructor
-	 * @param games
-	 * @param input
+	 * @param games list of games
+	 * @param input scanner
 	 */
 	public OrganizerApp(List<Game> games,Scanner input) {
-		super(games,input);
+		this.games = games;
+		this.input=input;
 	}
 	
 	/**
@@ -215,22 +207,51 @@ class OrganizerApp extends App{
 		}
 		return this;
 	}
+	
+	
+	/**
+	 * get if the user want to exit from the app or not
+	 * @return boolean 
+	 */
+	public boolean isExitSelected(){
+		return exit;
+	}
+	
+	/**
+	 * set the exit value if the user want to exit from the app or not
+	 * @param exit
+	 */
+	public  void setExit(boolean exit){
+		this.exit = exit;
+	}
+	/**
+	 * get list of games that added to the app so far
+	 * @return list of games
+	 */
+	public  List<Game> getGames(){
+		return games;
+	}
 }
 /**
- * Child class of  App represents the options the fan has.
+ * An implementation of App interface represents the options the fan has.
  * @see App
  * this class uses method overloading
- * @author Mary
+ * 
  *
  */
-class FanApp extends App{
+class FanApp implements App{
+	
+	private List<Game> games;
+	private boolean exit;
+	protected Scanner input;
 	/**
 	 * Constructor
 	 * @param games
 	 * @param input
 	 */
 	public FanApp(List<Game> games,Scanner input) {
-		super(games,input);
+		this.games = games;
+		this.input=input;
 	}
 	/**
 	 * Shows all the options an fan has.
@@ -341,14 +362,37 @@ class FanApp extends App{
 		}
 		return this;
 	}
+	
+	/**
+	 * get if the user want to exit from the app or not
+	 * @return boolean 
+	 */
+	public boolean isExitSelected(){
+		return exit;
+	}
+	
+	/**
+	 * set the exit value if the user want to exit from the app or not
+	 * @param exit
+	 */
+	public  void setExit(boolean exit){
+		this.exit = exit;
+	}
+	/**
+	 * get list of games that added to the app so far
+	 * @return list of games
+	 */
+	public  List<Game> getGames(){
+		return games;
+	}
 }
 /**
  * This class represent game information entered by an organizer
- * @author Mary
+ * 
  *
  */
 class Game{
-	private int code;
+	private final int code;
 	private String location;
 	private Date date;
 	private List<Seat> seats;
@@ -509,7 +553,7 @@ class Game{
 	 * @return Ticket
 	 * @see Ticket
 	 */
-	public Ticket getTicket(int ticketNumber) {
+	public final Ticket getTicket(int ticketNumber) {
 		Ticket selectedTicket = null;
 		for(Ticket t :tickets) {
 			if(t.getTicketNumber()==ticketNumber) {
@@ -578,7 +622,7 @@ class Game{
 
 /**
  * Class that has some static methods to get games data
- * @author Mary
+ * 
  *
  */
 class GameHelper{
@@ -619,7 +663,7 @@ class GameHelper{
 }
 /**
  * Custom exception for not found game
- * @author Mary
+ * 
  *
  */
 class GameNotFoundException extends RuntimeException{
@@ -631,7 +675,7 @@ class GameNotFoundException extends RuntimeException{
 }
 /**
  * abstract parent class for all seats exceptions
- * @author Mary
+ * 
  *
  */
 abstract class SeatException extends RuntimeException{
@@ -641,7 +685,7 @@ abstract class SeatException extends RuntimeException{
 }
 /**
  * abstract parent class for all tickets exceptions
- * @author Mary
+ * 
  *
  */
 abstract class TicketException extends RuntimeException{
@@ -652,7 +696,7 @@ abstract class TicketException extends RuntimeException{
 /**
  * child class of SeatException if all seats all reserved
  * @see SeatException
- * @author Mary
+ * 
  *
  */
 class NoAvailiableSeatsException extends SeatException{
@@ -665,7 +709,7 @@ class NoAvailiableSeatsException extends SeatException{
 /**
  * child class of SeatException if the seat is not available
  * @see SeatException
- * @author Mary
+ * 
  *
  */
 class SeatNotAvailiableException extends SeatException{
@@ -678,7 +722,7 @@ class SeatNotAvailiableException extends SeatException{
 /**
  *  child class of TicketException if the ticket is not found
  *  @see TicketException
- * @author Mary
+ * 
  *
  */
 class TicketNotExistException extends TicketException{
@@ -690,7 +734,7 @@ class TicketNotExistException extends TicketException{
 /**
  *  child class of TicketException if you can't cancel your ticket
  *  @see TicketException
- * @author Mary
+ * 
  *
  */
 class TicketCanNotCanelledException extends TicketException{
@@ -701,7 +745,7 @@ class TicketCanNotCanelledException extends TicketException{
 }
 /**
  * abastract class for all seats categories
- * @author Mary
+ * 
  *
  */
 abstract class Seat{
@@ -773,53 +817,61 @@ abstract class Seat{
 /**
  * Child class of Seat for first category
  * @see Seat 
- * @author Mary
+ * 
  *
  */
 class Category1Seat extends Seat{
+	
+	private static final int PRICR =50;
+	private static final int CATEGORY_NUMBER =1;
+	
     /**
      * add price for category one seats and numbers of seats too
      * @param number
      */
 	public Category1Seat(int number) {
-		super(number, 50, 1, false);
+		super(number, PRICR, CATEGORY_NUMBER, false);
 	}
 	
 }
 /**
  * Child class of Seat for second category
  * @see Seat 
- * @author Mary
+ * 
  *
  */
 class Category2Seat extends Seat{
+	private static final int PRICR =20;
+	private static final int CATEGORY_NUMBER =2;
 	/**
      * add price for category two seats and numbers of seats too
      * @param number
      */
 	public Category2Seat(int number) {
-		super(number, 20, 2, false);
+		super(number, PRICR, CATEGORY_NUMBER, false);
 	}
 }
 /**
  * Child class of Seat for third category 
  * @see Seat
- * @author Mary
+ * 
  *
  */
 class Category3Seat extends Seat{
+	private static final int PRICR =10;
+	private static final int CATEGORY_NUMBER =3;
 	/**
      * add price for category three seats and numbers of seats too
      * @param number
      */
 	public Category3Seat(int number) {
-		super(number, 10, 3, false);
+		super(number, PRICR, CATEGORY_NUMBER, false);
 	}
 	
 }
 /**
  * class that holds ticket data
- * @author Mary
+ * 
  *
  */
 class Ticket{
